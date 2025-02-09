@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+from django.templatetags.static import static
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,23 +27,27 @@ SECRET_KEY = "django-insecure-e=^qbvmhb-$s$t7ld#1ig=313#riob5vjfne&%8&1gwp6^kot)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "app",
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -66,6 +72,16 @@ TEMPLATES = [
         },
     },
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+)
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 
 WSGI_APPLICATION = "Fintech_a_thon.wsgi.application"
 
@@ -121,3 +137,96 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+UNFOLD = {
+    "SITE_TITLE": "FinWise | Admin Panel",
+    "SITE_HEADER": "FinWise Administration",
+    "SITE_URL": "/",
+    "SITE_ICON": {
+        "light": lambda request: static("img/logo.png"),
+        "dark": lambda request: static("img/logo.png"),
+    },
+    "SITE_SYMBOL": "🚀",
+    "SITE_FAVICONS": [
+        {
+            "rel": "icon",
+            "sizes": "32x32",
+            "type": "image/svg+xml",
+            "href": lambda request: static("favicon.svg"),
+        },
+    ],
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "THEME": "dark",
+    "LOGIN": {
+        "image": lambda request: static("images/login-bg.jpg"),
+        "redirect_after": lambda request: reverse_lazy("admin:app_flaggedaccount_changelist"),
+    },
+    "STYLES": [
+        lambda request: static("css/style.css"),
+    ],
+    "SCRIPTS": [
+        lambda request: static("js/script.js"),
+    ],
+    "COLORS": {
+        "font": {
+            "subtle-light": "107 114 128",
+            "subtle-dark": "156 163 175",
+            "default-light": "75 85 99",
+            "default-dark": "209 213 219",
+            "important-light": "17 24 39",
+            "important-dark": "243 244 246",
+        },
+        "primary": {
+            "50": "250 245 255",
+            "100": "243 232 255",
+            "200": "233 213 255",
+            "300": "216 180 254",
+            "400": "192 132 252",
+            "500": "168 85 247",
+            "600": "147 51 234",
+            "700": "126 34 206",
+            "800": "107 33 168",
+            "900": "88 28 135",
+            "950": "59 7 100",
+        },
+    },
+    "EXTENSIONS": {
+        "modeltranslation": {
+            "flags": {
+                "en": "🇬🇧",
+                "fr": "🇫🇷",
+                "nl": "🇧🇪",
+            },
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": _("Navigation"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Flagged Accounts"),
+                        "icon": "account_balance",
+                        "link": reverse_lazy("admin:app_flaggedaccount_changelist"),
+                    },
+                    {
+                        "title": _("Flagged Upi"),
+                        "icon": "account_balance",
+                        "link": reverse_lazy("admin:app_flaggedupi_changelist"),
+                    },
+                    {
+                        "title": _("Non Flagged Upi"),
+                        "icon": "account_balance",
+                        "link": reverse_lazy("admin:app_nonflaggedupi_changelist"),
+                    },
+                ],
+            },
+        ],
+    },
+}
