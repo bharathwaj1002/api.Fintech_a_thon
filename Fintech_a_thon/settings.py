@@ -140,8 +140,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 UNFOLD = {
-    "SITE_TITLE": "FinWise | Admin Panel",
-    "SITE_HEADER": "FinWise Administration",
+    "SITE_TITLE": "PayWise | Admin Panel",
+    "SITE_HEADER": "PayWise Administration",
     "SITE_URL": "/",
     "SITE_ICON": {
         "light": lambda request: static("img/logo.png"),
